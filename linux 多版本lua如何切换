@@ -1,0 +1,8 @@
+[root@server lua-5.3.4]# lua -v
+Lua 5.1.4  Copyright (C) 1994-2008 Lua.org, PUC-Rio
+[root@server lua-5.3.4]# rm -rf /usr/bin/lua
+[root@server lua-5.3.4]# ln -s /home/hadoop/software/lua-5.3.4/src/lua /usr/bin/lua
+[root@server lua-5.3.4]# lua -v
+Lua 5.3.4  Copyright (C) 1994-2017 Lua.org, PUC-Rio
+--------------------- 
+> 基本做法就是将src/lua   复制到/usr/bin/下即可
