@@ -1,0 +1,177 @@
+docker运行         https://www.bilibili.com/video/av17854410/?p=20
+**https://www.bilibili.com/video/av17854410/?p=20**
+
+docker  run ubuntun echo 123     执行完后就结束程序
+
+docker run -i -t  ubuntu  /bin/bash       启动交互式容器.............
+-i     --interactive =true|false 默认false  始终未容器打开标准输入输出
+-t    --tty = true true|false 默认false       开启一个虚拟的tty终端
+
+列举出docker曾经创建了哪些容器呢？
+docker ps -a   -l
+    -a   之前创建的所有的容器
+    - l   之前创建的最新的一个
+    无参数   返回正在运行的容器
+
+docker  inspect  容器id/容器名字    返回容器的详细信息
+
+docker 自定义容器的名字
+docker run --name=wahaha  -i -t ubuntu /bin/bash
+
+重新启动已经停止的容器
+docker start -i  容器名字
+
+删除已经停止的容器
+docker rm 容器名字
+
+
+### docker 守护式的容器：
+               能够长期运行
+               没有交互式会话
+               适合运行应用程序和服务
+
+1.以守护形式运行容器
+    docker  run -i -t  IMAGE /bin/bash
+    用   Ctrl+P   Ctrl + Q方式退出
+docker   attach  容器名字    重新进入正在后台运行的容器
+
+2. run命令启动守护式容器
+docker run -d  IMAGE  [command][arg......]
+
+查看容器运行时候的日志信息
+docker  logs [-f][-t][--tail]容器名字
+  -f   --follows=true|false  默认false
+  -t  --timestamps=true|false 默认false
+  --tail='all'
+
+查看运行中的容器中的进程
+docker top  容器名字
+
+在已经运行的容器中启动新的进程
+docker exec   [-d] [-i ] [ -t ]  容器名字  [COMMAND][ARG...]
+
+停止守护式的容器
+docker stop 容器名字
+docker kill 容器名字
+
+
+运行容器时候容器的端口映射。。。
+docker run -P 
+   -P 为容器暴露所有的端口映射
+   -p  指定映射哪些容器的端口
+
+docker run -p 80  -it ubuntn /bin/bash                              只指定容器的端口
+docker run -p 8080：80  -it ubuntn /bin/bash                   指定容器的端口和宿主机的端口
+docker run -p 0.0.0.0：80  -it ubuntn /bin/bash                 指定容器的端口和ip
+docker run -p 0.0.0.0:8080：80  -it ubuntn /bin/bash        指定容器的端口和宿主机的端口和IP
+
+
+在容器中部署Nginx如下：
+   创建映射80端口的交互式容器
+   安装Nginx
+  安装VIM
+  创建静态页面
+  修改Nginx配置文件
+  运行Nginx
+  验证网站访问
+
+
+docker镜像
+ 列出镜像   返回在当前docker中已经安装的镜像
+docker images 
+查看一个镜像的完整信息。
+docker inspect  镜像ID
+
+删除一个镜像
+docker rmi  [OPTIONS]  IMAGE [image................]
+     -f   --force=false   Force removal of the image
+     --no-prune=false   Do not delete untagged parents
+
+docker rmi  镜像id/ubuntu:14.04
+
+
+
+### 从网络中搜索所有镜像，然后选择一个下载到本地，然后docker images -a 可以查看本地有哪些可用的镜像，最后就可以使用这个镜像了
+docker镜像查找。。。
+docker search  [OPTIONS ]  TERM
+  --automated=false   Obly show automated builds
+  --no-trunc=false     Donot truncate output
+  -s   --stars=0        only displays with at least x stars
+
+docker search ubuntu    
+使用搜索到的镜像
+docker pull [OPTIONS] NAME
+docker pull ubuntu:14.04
+
+### 本地构建镜像
+    保存了对容器的修改，并且可以再次使用
+    自定义了镜像的能力
+    以软件的形式打包，并分发服务和运行环境
+
+docker构建镜像的方式： 创建好的镜像可以通过  docker images -a 查看本地的镜像，就有了
+1 docker commit  通过容器构建
+2 docker build       通过Dockerfile文件构建
+
+通过dockerfile 创建镜像：
+创建一个dockerfile文件，然后build
+#First Dockerfile
+FROM  ubuntu:14.04/也可以是其他的镜像
+MAINTAINER dormancypress  "dormancypress@outlook.com"
+RUN  apt-get update
+RUN  apt-get install -y nginx
+EXPOSE 80
+
+docker build   -t='镜像名字'   .     执行这个命令后会依次执行dockerfile文件内容。--no-cache   创建过程中午缓存
+
+
+docker  status
+service docker stop/start/restart
+
+
+/etc/default/docker    docker启动配置文件
+
+Dockerfile 格式：
+FROM  IMAGE
+FROM  IMAGE:TAG
+
+MAINTAINER   zhqaging "158825506@qq.com"   作者信息
+
+
+RUN apt-get update
+
+RUN <command>    shell模式
+RUN [ 'executable'   ,'param1'  ,'param2'  ]
+
+EXPOSE <port>[<port>.....]
+指定运行改镜像的容器使用 的端口 （注意在使用过程中  run -p 80 需要手动指定端口号的）
+
+将本地文件复制到  镜像文件中去
+ADD  <src>  <dest>
+
+COPY  <src>  <dest>
+
+WORKDIR  /path/to/workdir             指定镜像工作中的绝对路径
+
+USER  daemon     镜像开启的用户默认是root用户，可以指定用哪个用户运行的
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
