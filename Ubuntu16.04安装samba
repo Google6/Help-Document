@@ -1,0 +1,34 @@
+参考：https://www.linuxidc.com/Linux/2016-12/138498.htm
+
+apt-get install samba
+apt-get install smbclient
+
+vi /etc/samba/smb.conf
+在文件末尾加上如下[share]  （相当于在home目录项增加了一个新用户）
+其中share为新用户，需要在home下  创建share文件夹，作为share用户的家
+[share]
+comment = Share Folder require password
+browseable = yes
+path = /home/share
+create mask = 0777
+directory mask = 0777
+valid users = share
+force user = nobody
+force group = nogroup
+public = yes
+writable = yes
+available = yes 
+
+3.保存退出后重启samba：
+sudo /etc/init.d/samba restart
+
+4. 切换到 /home/目录下创建一个用户目录：
+sudo mkdir share
+5.设置目录的权限：  （777代表最高权限，可读可写可执行）
+chmod 777 share
+7.增加相应的系统账号：
+sudo groupadd share -g 6000
+sudo useradd share -u 6000 -s /shin/nologin -d /dev/null
+
+8：windows下电脑，增加一个网络位置：\\192.168.1.2\share
+结束！
