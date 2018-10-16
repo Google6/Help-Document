@@ -1,0 +1,279 @@
+sql语句  用;  分好结尾，  sql语句不区分大小写的。sql  字符串都用 ''  单引号的。
+
+创建数据库
+create database db1;
+drop database db1;
+
+使用这个数据库
+use db1;
+
+show  databases;  查看有多少数据库
+
+show tables;
+显示当前数据库中的表格有哪些；
+
+
+desc  表的名字；//查看表的结构
+
+select  database();当前使用的数据库
+
+show tables  from 数据库名字;     查看某个数据库中表格有哪些
+
+show create table 表名字;   显示当时创建这张表时候的语法是什么吗 ? 
+
+select  name,age from user;
+select  name,age as '年龄'   from user;显示重命名
+
+条件查询：
+select  age  from user where  age=10;
+
+select  age  from user where  age>10 and age < 15;
+select  age  from user where  age  between 10  and 15;
+
+select age form user where age is null ;  查看这个字段是空的么
+select age form user where age is not null ;
+
+select name from user where name in ('aaa','bbb');  in 在......范围之中
+
+select  name from user where name like '%O%'   
+模糊查询语法（%表示任意个任意的字符  _  代表任意一个字符）
+
+
+select   name,age from user order by age;  --默认升序排序
+select   name,age from user order by age  desc;   --降序排序
+
+select   name,age from user order by age  desc, name asc;  先按age升序排，在按照name降序排
+
+order by 排序
+group by 分组
+
+字符串操作 sql语法
+lower(name)
+uppper(name)
+substr(name,1,1)
+length(name)
+trim(name)
+round(123.456)
+round(123.456,1) 保留1位小数
+rand()随机数
+ifnull(name, 0)  如果是空显示0  
+
+凡是参与空值的计算结果都是空 需要用ifnull（age,10）来处理
+
+select version(); 查看数据库版本信息。
+
+mysql处理日期方式：
+---  str_to_date  将日期字符串转换为日期类型，【varchar --->date 】
+该函数的执行结果是date类型的，str_to_date('日期字符串' , '日期格式' )
+关羽mysql中的日期格式：
+str_to_date  通常用在插入函数中
+年月日时分秒毫秒
+%Y
+%m
+%d
+%H
+%i
+%s
+查询入职的员工：
+select name from user where dd == '1999-09-02'  这里自动转为date类型的
+select name from user where dd =str_to_date('1999-09-02'  ,'%Y-%m-%d')
+
+---  data_format   将date转换特定格式的字符串
+select name ,date_format(dd,'%Y-%m-%d')  as mydate from user;
+
+sql分组函数；
+count   sum  avg  max  min   可以忽略空值，
+
+查询的结果去重  使用distinct关键字，可以去重的。
+select    distinct   job   from   user ;   ---将查询结果的重复去掉  
+distinct   只能出现在所欲字段最前方，（注意：是后面所有字段联合起来去重的）
+
+
+分组函数：group by是在分组之前过滤，having是在分组之后过滤的。
+
+---group  by   ---如果一条语句后面有group bu 那么select后面只能跟参与分组的字段和分组的函数
+案例：找出每个工作岗位的最高薪水
+select  max(sal)  from  user group by job;
+
+案例：计算不同部分中不同工作岗位的最高薪水
+select deptno,job,max(sal) from   user   group by deptno,job;
+
+案例：找出每个工作岗位的最高薪水，除了manaager
+select job,max(sal) from  user where job<>manaager  group by job;
+
+---having
+案例：找出每个岗位的平均薪水，找出大于1500的
+select job,avg(sal) from  user  group by job  having avg(sal) > 1500;
+
+
+sql执行的顺序：
+from        从表中检索数据
+where      经过一些条件进行过滤
+group by 然后再次分组
+having     分组不满意再次分组
+select       查询出来
+order by   排序输出
+
+
+
+### 表格连接查询
+1;什么是连接查询？
+实际开发中数据存储在多张表格当中的。
+
+内连接：等值连接，非等值连接，自连接：（2表完全匹配的查询出来）
+外连接：左外连接，右外链接：（在内连接的基础上，加上无条件显示一张表的所有东西）
+
+
+
+1:员工表，部门表格；多个表格联合查询需要给表格起一个别名的
+select   e1.name,e2.deptno from user1 e1,user2 e2;得到的记录总数是 a表数据 * b的数量
+
+select   e1.name,e2.deptno from user1 e1,user2 e2 where e1.xx = e2.xx;--内连接（等值连接）sql92语法
+select   e1.name,e2.deptno from user1 e1 join user2 e2 on e1.xx = e2.xx;--内连接（等值连接）sql99语法
+
+
+
+2:案例：显示每个员工的工资等级，显示员工名，工资，工资等级
+select e.ename,e.sal,s.grade from emp e  join salgrade s  on e.sal between s.losal  and s.hisal;内连接（非等值连接）
+
+3:案例：找出每一个员工的上级领导，要求显示员工名，对应的领导名字
+select  a.ename  empname,b.ename leadername  from emp a  join emp b on  a.mgr=b.empno;--内连接（自连接连接）
+自连接--就是自已和自己连接
+
+4：案例4：找到每一个员工对应的部门名称，要求显示所有的部门名称；
+sql99语法：右外连接
+
+right  完全显示右边的表同样left 完全显示左边的表格。
+select e.ename ,d.dname from emp e right join dept d on e.deptno=d.deptno;
+
+
+> 为什么inner outter可以省略，原因是外链接只看  left 或者right 没有的就是内连接
+
+
+多张表格 的联合查询
+5：案例：找出每一个员工对应的部门名称，员工对应的工资等级，要求显示员工名，部门名，工资等级。
+语法：   select  xxx from a join b on 条件  join c on 条件；
+select  e.ename,d.dname,s.grade  from emp a join  dept d on e.deptno=d.depnp join salgrade s on s.sal 条件
+
+
+
+### 子查询  select 嵌套select ### 
+案例6：找出薪资比公司平均高的员工，显示员工名字，和薪水
+select  ename,sal  from emp where sal > (select avg(sal)  from emp );
+
+案例7：找出每个部门的平均薪水，并且显示平均薪水和薪水等级；
+
+select t.deptno,t.avgsal,s.grade  from (select deptno,agv(sal) as avsal from emp group by deptno) t join salgrade s on t.avgsal between s.losal and s.hisal;
+
+
+
+### union 合并查询结果集的
+案例：找出工作岗位是  A 和 B 的 工人
+select  ename,job from user where job='A' or job='B';
+select  ename,job from user where job in('A',  'B');
+
+合并语法要求列数(类型)相同的..............
+select  ename,job from user where job='A'   union    select  ename,job from user where job='B';
+
+select ename as enamedname from emp  union select dname as enamedname from dept;
+
+###     limit  用来获取一张表中的某部分数据
+案例：找出员工表中前5条记录
+select ename from emp limit 5;
+select ename from emp limit 0,5;
+
+limit  出现在语法最后。
+limit  使用语法  ： limit  开始下标，长度。  下标从0开始。
+案例：找出工资排名前5的员工
+select ename,sal from user order by sal desc  limit 5;
+
+
+### 创建表###
+set character_set_results='gbk'
+
+
+create  table tableName(
+
+columnName dataType(length),
+...
+
+); 
+
+
+mysql:数据类型
+
+varchar  :变长字符串（字段中是边长的用它）
+char      : 定长字符串 （字段中是定长的用它）
+int ：整数  int(3)表示最大存的是999
+bigint:长整数
+float：单精度
+double：双进度   double(7,2)7个有效数子，2个小数位
+data：日期（为了通用一般用字符串代替他）
+blob：二进制大对象（存放图片声音等）
+clob；字符大对象（存放大的文本  4G+的字符串）
+
+
+CREATE TABLE t_student(
+no      INT(10),
+name   VARCHAR(32),
+sex    CHAR(1),
+birth   DATE,
+email   VARCHAR(128)
+);
+
+带默认值的
+CREATE TABLE t_student(
+no      INT(10)  default 1 ,
+name   VARCHAR(32) default 'aaa',
+sex    CHAR(1),
+birth   DATE,
+email   VARCHAR(128)
+);
+
+drop  table t_student ;[这种方式删除，如果不存在，会报错的]
+drop table if exists  t_student;【最好用这种方式删除】
+
+往t-student表格插入数据；
+INSERT INTO TABLENAME  （columnname1,columnname2,...） 
+           values(value1,value2,value3..............);
+
+### 表的复制### 
+create table table2  as select* from user;
+
+insert inro user2  select * from emp2 where sal = 3000;
+
+**增删改表的结构**
+给存在的表  加一个新的字段。
+alter table t_student  add tel varchar(11);
+alter table t_student modify tel varchar(12);
+alter table t_student drop tel
+**增删改表的数据 **
+
+update:语法
+（注意update 如果没有条件会将所有字段更新的）
+update  tablename  set  字段名=字段值，字段名=字段值  where 条件 
+
+delete from tablename  where  条件
+（注意update 如果没有条件会将所有字段删除）
+
+外键用其他表字段的时候必须具有唯一性，但是外键可以为NULL的
+
+
+
+
+外键约束只有表级约束。
+外键用其他表字段的时候必须具有唯一性，但是外键可以为NULL的
+有了外键之后，删除子表的话，在删除父表
+创建表的话，先父，后子
+插入表的话，先父，后子
+
+
+
+
+
+
+
+
+
+
+
