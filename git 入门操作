@@ -1,0 +1,81 @@
+### 使用git 开始要用git初始化。
+git config --global user.email   "158825506@qq.com"
+git config --global user.name   "zhangjing123456"
+
+### 本地git操作，创建文件夹，在文件夹中使用git init   让git来管理这个文件夹，并且产生.git文件夹
+
+### 版本库中有暂停区，和提交区、分别对应add，commit操作后的目录
+
+### git status 查看工作区的状态，
+**  新创建的git工程啥也没有：nothing to commit **
+**  有新文件还没有add操作：Untracked files   ** 
+**  add操作以后：No commits yet  Changes to be committed  **     
+**   commit 操作后：回到状态1，  nothing to commit **     
+
+git  add  xx 后可以通过  git rm --cached xx  回到 add之前的状态
+
+### 对一个已经 commit 成功后的文件进行了修改后，需要2步，git add,git commit......
+
+### 最新的版本在第一条
+### git  如果想回到某一个版本  用 git reset --hard   be14d821a1dd06c195a02364bbd1187f2ea9aa16
+----git reset --hard HEAD       
+----git reset --hard HEAD^     回退到上一个版本
+----git reset --hard HEAD^^  回退到上上一个版本
+
+###git  log --pretty=oneline  查看版本信息的简化版
+
+###git  log只能查看 当前版本之前的日志，git reflog 查看所有的版本日志
+
+###对于没有 git add的
+###git checkout 想丢弃修改，使用版本库的
+###git checkout -- xx     可以用版本库的 东西来更新本地文件
+###对于已经git add的
+###需要2步操作，git reset HEAD xx.txt    &&  git checkout -- xx.txt  撤销本地操作，与版本库同步
+
+### 对于新的文件，status会出现，
+Untracked files:（这个文件没有跟踪的）
+(use "git add <file>..." to include in what will be committed)
+对于已经commit后的，再次修改的文件status会出现：
+On branch master   （已经在版本库了）
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+### 在主分支上面切一个  分支  dev_qing
+ ----   git checkout -b  dev_qing
+git  branch  查看所有的分支。
+git  checkout master  来切换分支。
+
+git branch -d  master 、、删除分支
+git branch -D master 、、强制删除分支
+
+###别名使用
+git config --global  alias.st  status   表示用st代表status
+
+git  config --global --l    查看git命令，config配置信息
+
+###版本打标签
+git tag 版本001    打标签（当前最新版本）
+git  tag 版本002  1ca35856c94e17f881da4f0fab566ac72b3f7712  打标签（指定版本）
+git tag  查看标签
+git tag -d  v1  删除标签
+
+###忽略文件（当然忽略文件本身首先要add  commit的）
+根 创建.gitignore文件  
+或略文件格式：里面有忽略各种文件的方法..
+https://github.com/github/gitignore
+
+###Git 远程仓库使用
+本地先  git init 
+关联本地和远程仓库： git remote add origin https://github.com/zhangjing123456/gitUse.git
+查看本地仓库是否有关联的远程仓库：git  remote
+git remote -v  查看远程仓库地址。
+
+###  如果是一个新人使用 git  需要
+ ssh-keygen  -t rsa -C  "158825506@qq.com"  本地生成ssh秘钥
+C:\Users\Administrator\.ssh\id_rsr.pub  内容添加到git网站 ssh秘钥上面
+最后 才能进行  pull push 操作的。
+
+
+
+
