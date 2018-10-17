@@ -1,0 +1,80 @@
+-------------------001------------------------
+object:a.o   b.o  
+    gcc -o object a.o b.o   -lpthread
+
+a.o:a.c a.h
+  gcc -c a.c
+b.o:b.c b.h
+  gcc -c b.c
+clean:
+  rm -rf *.o object
+ 
+---------------------实例1---------------------------  
+SOURCE=$(wildcard *.c)   #获取当前目录下所有.c文件
+OBJECTS=$(patsubst %c,%.o, $(SOURCE)) #将所有source列表中.c替换成.o
+
+PROGRAM=object
+LIBS=-lpthread
+CC=gcc
+
+$(PROGRAM): $(OBJECTS)                 #  目标 依赖 *.o
+  $(CC) -o $(PROGRAM) $(OBJECTS) $(LIBS)
+
+$(OBJECTS): $(SOURCE)                  #  *.o 依赖 *.c
+
+all:
+  echo $(SOURCE)
+  echo $(OBJECTS)
+  
+clean:
+  rm -rf $(OBJECTS)  $(PROGRAM)
+  
+
+、、在一个Makefile中可以调用其他目录的Makefile文件
+all:  cd $(XX_DIR);$(MAKE) 
+ 
+
+-----------GUN make------------------------
+./configure  是配置并且生成makefile
+make
+make install
+
+#############################标准Makefile  1.0
+EXE=helloword
+SUBDIR= src object
+
+CXX_SOURCES=$(foreach dir, $(SUBDIR), $(wildcard $(dir)/*.cpp ))
+CXX_OBJECTS=$(patsubst %.cpp, %.o, $(CXX_SOURCES))
+DEP_FILES  =$(patsubst %.o, %.d, $(CXX_OBJECTS))
+
+$(EXE): $(CXX_OBJECTS)
+  g++ $(CXX_OBJECTS)  -o $@
+  
+%.o:%.cpp
+  g++ -c -MMD $< -o $@
+-include $(DEP_FILES)  
+
+clean:
+  rm -rf $(CXX_OBJECTS) $(DEP_FILES) $(EXE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
