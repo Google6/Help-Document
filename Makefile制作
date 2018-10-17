@@ -9,7 +9,7 @@ b.o:b.c b.h
 clean:
   rm -rf *.o object
  
----------------------实例1---------------------------  
+---------------------Makefile  动脑版本0.0---------------------------  
 SOURCE=$(wildcard *.c)   #获取当前目录下所有.c文件
 OBJECTS=$(patsubst %c,%.o, $(SOURCE)) #将所有source列表中.c替换成.o
 
@@ -39,7 +39,7 @@ all:  cd $(XX_DIR);$(MAKE)
 make
 make install
 
-#############################标准Makefile  1.0
+#############################标准Makefile  1.0############################
 EXE=helloword
 SUBDIR= src object
 
