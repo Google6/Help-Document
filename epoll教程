@@ -76,7 +76,7 @@ LT:就是在有事件读的时候，read(buf,5)  每次读5个字节，如果缓
 
 ET: 缓存中未读完的数据不会导致epoll_wait返回，只有新的事件满足，才返回的
 
-结论：epoll的ET模式，高效模式，但是只支持非阻塞
+结论：epoll的ET模式，高效模式，但是只支持非阻塞（读取数据是while轮循读取的）
 struct epoll_event event;
 event.events = EPOLLIN | EPOLLET;
 epoll_ctl(epfd, EPOLL_CTL_ADD,cfd,&event);
@@ -89,7 +89,7 @@ fcntl(cfd,F_SETFL,flg);
 缺点： 不能跨平台，仅仅linux
         
         
-        
+epoll的反应堆模型：ET模式 + 非阻塞 轮循 + void *ptr回调；      不但需要监听cfd的读事件，还有监听cfd的写事件  
         
         
 
