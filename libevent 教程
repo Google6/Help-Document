@@ -1,0 +1,147 @@
+
+
+libevent框架：  基于事件的异步通信模型。回调机制
+
+  创建 event_base:
+    struct event_base *event_base_new(void);  
+    
+  创建事件 event
+    常规事件：
+    buffer事件：
+      event_new();
+      bufferevent_socket_new();
+      
+  将事件添加到base上：
+    int event_add(struct event  *ev,struct timeval *tv);
+    
+  循环监听事件满足：启动循环
+    int event_base_dispatch(struct event_base *base);0：成功   -1：失败
+    
+    只有event_new 中指定 ev_persist 才能持续触发，否则触发一次，就跳出循环   EV_WRITE|EV_PERSIST /   EV_READ|EV_PERSIST
+  
+  释放event_base:
+     event_base_free(base);
+  
+  
+  
+  其他循环：
+    int  event_base_loopexit( struct event_base *base,const struct timeval *tv );  指定时间后停止循环
+    
+    int  event_base_loopbreak(struct event_base *base); 立刻停止循环
+    
+    
+创建事件：
+  struct event *ev;
+  struct event *event_new(struct event_base *base,eventil_socket_t fd, short what,event_callback_fn cb, void *arg);
+  base: event_base_new()返回
+  fd:绑定到事件的文件描述符
+  what：对应的事件（读写err）
+      EV_READ   一次读的事件
+      EV_WRITE  一次写事件
+      EV_PERSIST(持续触发，结合event_base_diapatch使用)
+  
+  
+  cb:一旦事件满足的回调函数
+    typedef  void(*event_callback_fn) (evutil_socket_t fd, short , void * );
+  
+  arg:回调函数的参数
+  
+  返回值：  成功创建的 event
+
+
+添加事件到event_base:
+  int event_add(struct event *ev, const struct timeval *tv);
+    ev:event
+    tv:
+      NULL ：不会超时，只到事件触发，（默认使用）
+      4：时间到了就回调
+    返回： 0 成功  -1：失败
+
+从event_base()上面摘下事件：
+  int  event_del(struct event *ev)
+
+销毁事件：
+  int  event_free(struct event *ev)
+  
+
+
+
+bufferentevent：通常用作套接字通信的。
+网络socket事件用bufferevent:
+bufferevent:  带有read/write缓冲区的事件， 缓存的数据只能读取一次，先进先出
+read缓存中有数据，那么读的回调会触发 使用bufferevent_read()读取数据，
+read_cb()
+{
+    bufferevent_read()  :代替read（）功能
+}
+write缓存：
+
+bufferevent_write()替代write()向写缓存写数据，只要写缓存有数据，就会发送给对方，
+发送成功了，write_cb()会被回调，通知写数据完成了
+{
+    // 作用不大
+}
+  
+ 
+创建bufferevent:
+  struct bufferevent *bufferevent_socket_new( struct event_base *base,evutil_socket_t fd, enum bufferevent_options options);
+  
+  fd:封装到bufferevet的 fd
+  options:
+      BEV_OPT_CLOSE_ON_FREE:释放bufferevent时候关闭底层传输接口，这将关闭底层套接字，释放底层bufferevent等。
+  返回：成功创建的bufferevent事件对象。
+销毁bufferevent:
+  bufferevent_socket_new（struct bufferevent *ev）;
+  
+
+
+设置bufferevent 回调：
+   void bufferevent_setcb(  struct bufferevent *bufev,  
+                            bufferevent_data_cb  readcb,
+                            bufferevent_data_cb writecb,
+                            bufferevent_event_cb eventcb,
+                            void *cbarg);  
+  
+    bufev:bufferevent_socket_new()返回的
+    
+    typedef void (*bufferevent_data_cb)(struct bufferevent *bev, void *arg);
+    readcb:设置读缓冲的回调  对应回调  read_cb{   bufferevent_read()读数据 }
+    
+    writecb:设置写的缓冲回调 write_cb{ 写成功的回调， }  、、作用，就是给调用者发送成功通知
+    
+    typedef void (*bufferevent_event_cb)(struct bufferevent *bev, short events,void *ctx); 可以NULL
+    eventcb:设置事件回调，  可以NULL
+    
+    cbarg:上面回调的参数列表
+    
+size_t bufferevent_read(struct bufferevent *bufev,void *data,size_t size);  冲bufferevent 缓冲移除数据的，
+int    bufferevent_write(struct bufferevent*bufev,const void *data, size_t size);
+  
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
