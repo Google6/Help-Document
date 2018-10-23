@@ -111,24 +111,71 @@ bufferevent_write()替代write()向写缓存写数据，只要写缓存有数据
     
     typedef void (*bufferevent_event_cb)(struct bufferevent *bev, short events,void *ctx); 可以NULL
     eventcb:设置事件回调，  可以NULL
+    short events: BEV_EVENT_CONNECTED:
+    
     
     cbarg:上面回调的参数列表
     
 size_t bufferevent_read(struct bufferevent *bufev,void *data,size_t size);  冲bufferevent 缓冲移除数据的，
 int    bufferevent_write(struct bufferevent*bufev,const void *data, size_t size);
   
+bufferevent：有读写2个缓冲：也可以设置缓冲
+  默认：新建的Bufferevent 写缓冲是 开的，读缓冲是 关的，
+  void bufferevent_enable（struct bufferevent *bufev,short events) 启动缓冲区
+  void bufferevent_disable(struct bufferevent*bufev, short events) 禁用
+  
+  events: EV_READ ,EV_WRITE,EV_READ|EV_WRITE
+  
+  short bufferevent_get_enable(struct bufferevent *bufev);
+  
+  
+  
+  
+  
+网络通信：
+  
+客户端：
+    int bufferevent_socket_connect(struct bufferevent *bev, struct sockaddr *address, int addrlen);
     
+服务器：  socket  bind  listen   accept 
+
+    struct evconnlistener *evconnlistener_new_bind(  
+          struct event_base  *base,
+          evconnlistener_cb  cb,
+              回调函数(一旦回调就可以和客户端通信 了)
+          
+          void *ptr,
+              回调参数
+              
+          unsigned flags,
+                识别标志：
+                    LEV_OPT_CLOSE_ON_FREE: 释放bufferevent时关闭底层的传输接口，这关闭底层的套接字，释放底层bufferevent等
+                    LEV_OPT_REUSEABLE  :端口复用 
+                    2个都选，用|
+
+          int blacklog,
+              -1：使用默认最大值 128
+              是 listen()第二个参数，
+
+          const struct sockaddr *sa,
+              服务器地址结构
+          int socklen
+              服务器地址结构大小
+    );  相当于上面的4个函数
+  
+  返回：成功创建的监听器    
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  evconnlistener_cb  cb,   客户端连接回调
+        typedef  void (*evconnlistener_cb)(
+              struct evconnlistener  *listener,
+              evutil_socket_t sock,   //客户端套接字
+              struct sockaddr *addr,  //客户端地址
+              int len,                //客户端地址大小
+              void *ptr               // cb参数
+        );
+        
+        
   
   
   
