@@ -1,0 +1,49 @@
+
+
+fd1 = int epoll_create(size)    创建一个指向红黑树的根节点的文件描述符
+size:创建的红黑树的监听节点的数量（仅供内核参考，这个红黑树是内核产生的，树的节点数有个默认值）
+返回值：成功>0:失败：-1
+
+
+typedef union epoll_data{
+  void     *ptr;
+  int       fd;   //对应监听事件的fd
+  uint32_t  u32;  //不用
+  uint64_t  u64;  //不用
+}epoll_data_t;
+
+struct epoll_event{
+    uint32_t     events;   // 事件
+    //EPOLLIN ：表示对应的文件描述符可读，（包括对端的socket正常关闭）
+    //EPOLLOUT ：表示对应的文件描述符可写。
+    //EPOLLRDHUP 
+    //EPOLLPRI ：表示对应的文件描述符有紧急的数据可读。（这里应该表示有带外数据到来）
+    //EPOLLERR ：表示对应的文件描述符错误发生
+    //EPOLLHUP ：表示对应的文件描述符被挂断。
+    //EPOLLET ：将EPOLL设置为边缘触发，E模式，这是相对于水平L 触发而言的。
+    //EPOLLONESHOT 
+    //EPOLLWAKEUP  
+
+    epoll_data_t data;     // 数据
+    //
+};
+
+成功0：失败：-1
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);：操作一个监听红黑树
+ 
+epfd:epoll_create的返回值
+ 
+op: 对该监听红黑树的操作，(对节点删除，修改，增加)（EPOLL_CTL_ADD,EPOLL_CTL_MOD,EPOLL_CTL_DEL）
+EPOLL_CTL_ADD: 增加fd到监听红黑树
+EPOLL_CTL_MOD:修改fd在监听红黑树的监听事件
+EPOLL_CTL_DEL:将一个fd从监听红黑树删除，（取消监听）
+
+fd: 待监听的fd
+
+event：epoll_event  的地址
+
+
+
+int epoll_wait(int epfd, struct epoll_event *events,int maxevents, int timeout);阻塞监听
+
+
