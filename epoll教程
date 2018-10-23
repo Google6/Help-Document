@@ -50,7 +50,7 @@ epfd:epoll_create的返回值
 
 events：数组,（传出满足监听条件的fd 结构体）只返回满足条件的奥...
 
-maxevents:是指events的size , 例如：struct epoll_event evs[1024],那么maxevents：1024
+maxevents:是指数组的容量, 例如：struct epoll_event evs[1024],那么maxevents：1024
 
 timeout：-1：阻塞， 0：不阻塞  >0:超时时间  毫秒
 
@@ -59,7 +59,9 @@ timeout：-1：阻塞， 0：不阻塞  >0:超时时间  毫秒
         -1：errno
         
         
-        
+
+
+
         
         
         
