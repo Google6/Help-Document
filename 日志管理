@@ -1,0 +1,5 @@
+./test  > test.txt   2>&1   运行程序所有日志 重定向到文件中
+
+或者
+  FILE*ou t= freopen("stdout.txt" , "w" , stdout);
+  printf("%s \n", "hello vexxx"); 
