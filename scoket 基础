@@ -1,0 +1,27 @@
+
+struct sockaddr_in addr;
+addr.sin_family = AF_INET/AF_INET6;
+addr.sin_port = htons(9900);
+1：addr.sin_addr.s_addr = htonl(INADDR_ANY);
+2：int dst;
+   inet_pton(AF_INET,"198.34.56.78", (void*)&dst);
+   addr.sin_addr.s_addr = dst;
+
+INADDR_ANY   取出本地有效的网络地址(一块网卡适合)
+
+
+listen(fd,-1)   （同时三次握手的连接数）参数设置，设置同时能和服务器建立连接的数量-1就是最大值128
+accept()   阻塞监听客户端连接
+
+
+
+socket(int domain,int type ,int protocol);
+domain:  AF_INET,AF_INET6,AF_UNIX  ，网络套接字，本地套接字
+type： SOCK_STREAM,SOCK_DGRAM
+protocol:0    表示这个套接字的代表协议是什么，流  默认是tcp
+
+
+int accept(int fd,struct sockaddr *addr,socklen_t  *addrlen);
+addr:传出参数，成功和服务器建立连接的客户端的地址结构 
+
+addrlen:传入传出，传入：addr的大小，传出：客户端实际addr的大小
