@@ -1,3 +1,6 @@
+#include<sys/socket.h>
+#include<arpa/inet.h>
+
 
 struct sockaddr_in addr;
 addr.sin_family = AF_INET/AF_INET6;
@@ -25,3 +28,11 @@ int accept(int fd,struct sockaddr *addr,socklen_t  *addrlen);
 addr:传出参数，成功和服务器建立连接的客户端的地址结构 
 
 addrlen:传入传出，传入：addr的大小，传出：客户端实际addr的大小
+
+获取客户端地址：
+char clientIP[1024];
+inet_ntop(AF_INET,&addr.sin_addr.s_addr,clientIP,sizeof(clientIP))
+
+int port = ntohs(addr.sin_port)
+
+
