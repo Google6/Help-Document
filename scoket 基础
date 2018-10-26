@@ -83,7 +83,14 @@ TCP数据报头部格式：
 服务器在给客户端发送FIN   4次挥手结束，关闭了客户端了
 
 
-
-
+三次握手双方的状态可以通过  netstat -apn | grep client 查看
+TCP状态转移图:
+1：主动连接服务器：CLOSE--发送SYN --SEND_SYN--接受ACK,SYN--SEND_SYN--发送ACK --ESTABLISHED(数据通信状态)
+2：主动关闭连接请求：ESTABLESHED:--发送FIN--FIN_WAIT_1 --接受ACK--FIN_WAIT_2(办关闭)
+                  --接受对端的FIN--FIN_WAIT_2(办关闭)--会发ACK--ITME_WAIT(只有主动关闭连接的一方才会进入TIME_WAIT状态，被动 放不会的)
+                  --进入TIME_WAIT需要等待2MSL时长才会进入CLOSE状态
+                  如果服务器没端口复用，服务器关闭后，会进入TIME_WAIT，再次启动服务器会失败的
+                  
+                  
 
 
