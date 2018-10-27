@@ -1,0 +1,22 @@
+UDP  CS 模型
+ 
+
+服务器：
+  recv/send 只能用于TCP通信中替换read,write
+  
+  server:
+      lfd = socket(AF_INET,SOCK_DGRAM,0)
+      bind()
+      while(1)
+      {
+        recvfrom()
+        sendto()
+      }
+      close()
+
+  client:
+      connfd = socket(AF_INET,SOCK_DGRAM,0)    
+      sendto(服务器地址，地址size); 
+      recvfrom
+      
+      close()
