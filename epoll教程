@@ -1,6 +1,10 @@
 
 epoll  ET   高效的原因
 http://blog.sina.com.cn/s/blog_4c8c58ce0102vkbo.html
+https://blog.csdn.net/wangfeng2500/article/details/9127421
+
+1：存在文件fd从用户到内核的copy
+2：内核通知时候，epool只通知变化的，lt模式会便利所有事件进行通知
 
 *****************************************************************************************************************
 fd1 = int epoll_create(size)    创建一个指向红黑树的根节点的文件描述符
