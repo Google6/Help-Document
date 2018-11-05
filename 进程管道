@@ -1,0 +1,19 @@
+普通管道是没有名字的只能父子进程之间进行通信的
+
+int s[2]={0};
+pipe(s)
+
+匿名管道：mkfifo   给管道一个名称 first in first out
+
+
+
+共享内存<sys/shm.h>
+
+shmget(key,size,flag)
+shmat()
+
+
+
+
+
+
