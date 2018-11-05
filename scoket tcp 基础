@@ -106,4 +106,5 @@ shutdown在关闭多个文件描述符指向的文件时候是一次性全部关
    setsockopt(fd,SOL_SOCKET,SO_REUSEADDR ,&opt,sizeof(opt));
    
    
-
+Linux 高性能服务器编程——socket选项
+https://blog.csdn.net/ctthuangcheng/article/details/25595117
