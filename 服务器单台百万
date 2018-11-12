@@ -1,0 +1,48 @@
+https://blog.csdn.net/pyxllq/article/details/80347923
+
+如何在单台服务器上实现百万级长连接，以下是实现该目标进行的一些优化：
+
+1.首先需要准备一台大内存的服务器，装上linux系统,比如rehat、centos(内核版本在2.6.25之上)等。
+
+    为什么需要大内存，因为每个连接都需要有读写缓存，具体看第二部内容；
+
+    为什么内核版本要在2.6.25之上，因为2.6.25内核之前有个 宏定义，定义了最大文件描述符大小为1024*1024，正好是100万。可以通过/proc/sys/fs /nr_open来设置该值。
+
+2.装好系统后，调整一下系统的参数，在/etc/sysctl.conf中
+
+#定义了系统中每一个端口最大的监听队列的长度,这是个全局的参数,默认值为128
+net.core.somaxconn = 2048  
+#系统读写缓存，默认值
+net.core.rmem_default = 262144  
+net.core.wmem_default = 262144  
+#系统读写缓存
+net.core.rmem_max = 16777216  
+net.core.wmem_max = 16777216  
+net.ipv4.tcp_rmem = 4096 4096 16777216  
+net.ipv4.tcp_wmem = 4096 4096 16777216  
+net.ipv4.tcp_mem = 786432 3145728  4194304
+net.ipv4.tcp_max_syn_backlog = 16384  
+net.core.netdev_max_backlog = 20000  
+net.ipv4.tcp_fin_timeout = 15  
+net.ipv4.tcp_max_syn_backlog = 16384  
+net.ipv4.tcp_tw_reuse = 1  
+net.ipv4.tcp_tw_recycle = 1   
+    net.ipv4.tcp_rmem用来配置tcp读缓冲的大小，第一个4096是这个读缓冲的最小值，第三个是最大值，中间的是默认值。zhe在程序中修改读缓冲的大小，但不能超过最小与最大。为了使每个socket所使用的内存数最小，我这里设置默认值为4096。
+
+net.ipv4.tcp_wmem用来配置写缓冲的大小。读缓冲与写缓冲在大小，直接影响到socket在内核中内存的占用，这就是第一条里说的为什么需要大内存。
+
+    而net.ipv4.tcp_mem则是配置tcp的内存大小，其单位是页，而不是字节。当超过第二个值时，TCP进入 pressure模式，此时TCP尝试稳定其内存的使用，当小于第一个值时，就退出pressure模式。当内存占用超过第三个值时，TCP就拒绝分配 socket了，查看dmesg，会打出很多的日志“TCP: too many of orphaned sockets”。
+
+另外，服务端需要打开大量的文件描述符，比如200万个，配置如下：
+
+设置nofile为200万(2.6.25内核及其之后版本)，这个值是可以通过/proc/sys/fs /nr_open来设置。
+
+现在再设置nofile就可以了:
+
+admin    soft    nofile  2000000  
+admin    hard    nofile  2000000 
+--------------------- 
+作者：pyxllq 
+来源：CSDN 
+原文：https://blog.csdn.net/pyxllq/article/details/80347923 
+版权声明：本文为博主原创文章，转载请附上博文链接！
