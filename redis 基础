@@ -1,0 +1,78 @@
+String:
+        set    key  value 
+        setnx  key  value      不存在的时候才设置
+        setex  key 10 value    设置 key_10秒 过期
+
+        set      name     123
+        setrange name  0  111   替换字符串
+
+        mset    key1 value1  key2 value2 ......   批量设置
+        msetnx  key1 value1  key2 value2 ......
+        mget    key1 key2 key3.................   批量获取
+
+        getset key value 获取旧值，设置新值
+
+        incr    key      自增key
+        incrby  key  5   自增5
+
+        decr  decrby   自减
+
+        append   key value    给一个字符append 一个字符串
+        strlen   key          查看长度
+
+
+Hash:  更方便的存储对象，占用空间小
+             表名 字段  值
+        hset key1 key2 value
+        hset user1 name zhangsan
+        hsetnx ..........
+
+        hmset  key1  key2  value2    key3 value3  批量设置
+        hget....
+        hincrby  key1 key2 value
+        hexists  key1 key2   判断hash表中是否存在东西
+        hdel     key1 key2   删除。
+        hkeys    key1        返回所有keys
+        hvals    key1        返回所有values
+
+        hgetall  key1   返回所有的key value  ..
+
+
+List:
+
+        lpush  list a      从list头部增加元素
+        lpop   list a
+        rpush  list b
+
+        linsert list c before a
+
+        lrange list 0 -1  返回所有元素
+
+        lset  list 0 haha   给某个元素赋值
+
+        lrem   list   1  hello　　　从ｌｉｓｔ中删除　１个hello
+        ltrim  list   3  6         保留3-6之间的所有数据，其他的全部删除掉
+
+
+        rpoplpush   list1 list2 
+
+        lindex   list   3       索引获取数据
+        llen     list      　　　返回长度
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
