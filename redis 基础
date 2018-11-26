@@ -83,11 +83,30 @@ Set  (无序集合)：
 
 
 
+Sorted Set( 有序集合):
+
+zadd myset 1 one
+zadd myset 2 tow
+zadd myset 3 tow
 
 
+zrange myset 0 -1            返回所有数据
+zrange myset 0 -1 withscore  返回所有数据和顺序号
+zrerange ....按照降序排列的
 
+zrangebyscore myset 3 5 withscore 返回score区间的值
 
+zrem  myset  one     删除元素
 
+zincrby myset 5 one  对应的顺序号增加5
+
+zrank  myset one     返回one 在从小到大排序的索引  0-1-2-3-..........
+zrevrank ...按照从大到小的排序
+zcount myset 3  6     按照score排序返回区间的元素的个数　
+
+zcard  myset          返回集合所有的元素个数
+zremrangebyrank  myset  3  5   删除集合中给定区间的元素  按照索引删除
+zremrangebyscore myset  3  5   删除集合中给定区间的元素  按照顺序号删除
 
 
 
