@@ -85,28 +85,124 @@ Set  (无序集合)：
 
 Sorted Set( 有序集合):
 
-zadd myset 1 one
-zadd myset 2 tow
-zadd myset 3 tow
+        zadd myset 1 one
+        zadd myset 2 tow
+        zadd myset 3 tow
 
 
-zrange myset 0 -1            返回所有数据
-zrange myset 0 -1 withscore  返回所有数据和顺序号
-zrerange ....按照降序排列的
+        zrange myset 0 -1            返回所有数据
+        zrange myset 0 -1 withscore  返回所有数据和顺序号
+        zrerange ....按照降序排列的
 
-zrangebyscore myset 3 5 withscore 返回score区间的值
+        zrangebyscore myset 3 5 withscore 返回score区间的值
 
-zrem  myset  one     删除元素
+        zrem  myset  one     删除元素
 
-zincrby myset 5 one  对应的顺序号增加5
+        zincrby myset 5 one  对应的顺序号增加5
 
-zrank  myset one     返回one 在从小到大排序的索引  0-1-2-3-..........
-zrevrank ...按照从大到小的排序
-zcount myset 3  6     按照score排序返回区间的元素的个数　
+        zrank  myset one     返回one 在从小到大排序的索引  0-1-2-3-..........
+        zrevrank ...按照从大到小的排序
+        zcount myset 3  6     按照score排序返回区间的元素的个数　
 
-zcard  myset          返回集合所有的元素个数
-zremrangebyrank  myset  3  5   删除集合中给定区间的元素  按照索引删除
-zremrangebyscore myset  3  5   删除集合中给定区间的元素  按照顺序号删除
+        zcard  myset          返回集合所有的元素个数
+        zremrangebyrank  myset  3  5   删除集合中给定区间的元素  按照索引删除
+        zremrangebyscore myset  3  5   删除集合中给定区间的元素  按照顺序号删除
+
+
+常用命令：
+        keys *  显示所有key
+        keys my* my开头的key
+
+        exists  key　查看这个键是否存在
+
+        del key　　删除键
+
+        expire key 10  设置一个存在的键的过期时间
+
+        ttl  key 　　查看剩余过期时间
+
+        ｓｅｌｅｃｔ　０／１／２／３选择数据库　（ｒｅｄｉｓ　编号　　［０－１５］）
+
+        move key 0/1/2/3   移除一个key到其他的数据库
+
+        persist  key  取消键的过期功能
+
+        rename  key1 key2 重命名
+
+        type key  查看键类型
+
+        ping   查看是否可以连接redis服务器
+
+        echo  xx　　输出
+        ｑｕｉｔ　　退出客户端
+
+        ｄｂｓｉｚｅ　　返回当前数据库Ｋｅｙｓ数量
+
+        ｉｎｆｏ获取ｒｅｄｉｓ服务器的信息
+
+        ｆｌｕｓｈｄｂ　删除当前数据库的所有的ｋｅｙ
+
+        ｆｌｕｓｈａｌｌ　删除所有数据库的所有ｋｅｙ
+
+
+高级选项：
+        启动密码配置，需要修改配置文件中的
+        #requirepass foobared
+        requirepass beijing
+        使用配置文件启动即可了
+
+        /etc/redis.conf
+        redis-cli -a password
+
+        主从复制：
+        master可以拥有多个salve
+        salve 之间互相通信
+        主 写 从 读
+
+        从服务器的配置：
+        slaveof 102.168.1.1 6666  master的ip和端口
+        masterauth lamp #master的密码
+
+redis事务（简单的）：
+redis事务中某个出现了错误，那么整体是不会回滚的，所以有问题的
+
+muti  开启事务上下文 ，命令一次放入队列中
+xxxx1
+xxxx1
+xxxx1
+xxxx1
+exec   上面的命令开始执行
+discard  取消前面的事务  清空事务队列，退出事务上下文
+
+
+reidswatch乐观锁：
+wath 指定的key 当exec的时候如果监视的key从调用的watch后发生了变化，那么整个事务会失败的
+
+
+
+
+持久化机制：
+
+快照：
+rdb 
+
+aof
+
+dump.rdb
+appendonly.aof
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
